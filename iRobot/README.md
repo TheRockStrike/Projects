@@ -37,12 +37,8 @@ The main class is create.py which contains everything to talk to the Roomba. To 
     time.sleep(2.0)
     robot.close()
 
-For more information read the original [tutorial](http://cs.gmu.edu/~zduric/cs101/pmwiki.php/Main/APITutorial). The list of all available sensors is [here](https://github.com/martinschaef/roomba/blob/master/create.py#L70).
+The list of all available sensors is [here](https://github.com/martinschaef/roomba/blob/master/create.py#L70).
 
 ### My setup
 
-I tested these scripts using this [cable](http://store.irobot.com/communication-cable-create-2/product.jsp?productId=54235746) and a Roomba 770. I tested the code on a Mac and on a RaspberryPi with debian (you need to change the PORT to tty.USB0 on the Pi) If the Roomba does not connect properly, check the cable first, then check if the port is correct, and then check if the baud rate in create.py is correct.
-
-### Known issues
-
-The odometer data is nonsense. I assume that there are bugs in the computation because its off way too much to count it as cumulative error.
+Used an FTDI cable (which provides a /dev/tty device) running from the Jetson + Aerocore 2 setup (running robot_object_detection.py) connected to a Poblano (running robot_controller.py). Using a Caspa HD camera connected to the CSI port on the Aerocore, I was able to have the iRobot Create 2 recognize objects and drive towards them, stopping when it got too close. I also made a video demonstration of this.
