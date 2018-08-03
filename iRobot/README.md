@@ -40,5 +40,8 @@ The main class is create.py which contains everything to talk to the Roomba. To 
 The list of all available sensors is [here](https://github.com/martinschaef/roomba/blob/master/create.py#L70).
 
 ### My setup
+I tried 2 setups:
+1.  Used an FTDI cable (which provides a /dev/tty device) running from the Jetson + Aerocore 2 setup (running       robot_object_detection.py) wired directly to the port on the Create.
+2.  Used a Poblano (running robot_controller.py) in conjunction with a Python socket to send instructions over WiFi. The Poblano then used an FTDI cable to interface with the Create.
 
-Used an FTDI cable (which provides a /dev/tty device) running from the Jetson + Aerocore 2 setup (running robot_object_detection.py) connected to a Poblano (running robot_controller.py). Using a Caspa HD camera connected to the CSI port on the Aerocore, I was able to have the iRobot Create 2 recognize objects and drive towards them, stopping when it got too close. I also made a video demonstration of this.
+Using a Caspa HD camera connected to the CSI port on the Aerocore, I was able to have the iRobot Create 2 recognize objects and drive towards them, stopping when it got too close. I also made a video demonstration of this.
