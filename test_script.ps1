@@ -1,2 +1,2 @@
-C:\Users\Administrator\Desktop
+cd C:\Users\Administrator\Desktop
 mkdir Test
