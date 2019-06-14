@@ -1,3 +1,2 @@
-cd $home
-cd Desktop
+C:\Users\Administrator\Desktop
 mkdir Test
