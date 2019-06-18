@@ -28,7 +28,7 @@ ppnx7eb+PywA0tyxnruhTy3Ee6rP4hz0nBHG4P5+rvkg43OF3JU=
 '
 
 # Go to home
-cd ~
+cd C:\Users\Administrator
 
 # Make .ssh folder
 mkdir .ssh
