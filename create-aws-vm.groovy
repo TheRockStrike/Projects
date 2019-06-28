@@ -182,7 +182,7 @@ abstract class AbstractPipeline implements Serializable {
   }
 }
 //----------------------------------
-node('EXECUTORS') {
+node {
     def utils = new PipelineUtilities(this)
     parameters {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
