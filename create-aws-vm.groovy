@@ -202,16 +202,6 @@ node {
         stage('Launching instance') {
             def sout = new StringBuilder(), serr = new StringBuilder()
             def commands =  """
-                            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-                            
-                            unzip awscli-bundle.zip
-                            
-                            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-
-                            echo "[default]\nregion = us-east-2" >> ~/.aws/config
-
-                            echo "[default]\naws_access_key_id = AKIAINQHI5EXZGBTXRTQ\naws_secret_access_key = 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" >> ~/.aws/credentials
-
                             aws ec2 describe-key-pairs
                             """
             def proc = commands.execute()
