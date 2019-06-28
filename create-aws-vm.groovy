@@ -206,15 +206,9 @@ node {
                             """
             def proc = commands.execute()
             proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(1000)
+            proc.waitForOrKill(5000)
             println "out> $sout err> $serr"
             echo "Successfully installed AWS CLI"
-
-            /*
-            sh """#!/bin/bash -x
-                    aws ec2 run-instances --image-id ami-0781cf90f9cef3437 --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME}
-                    """
-                    */
         }
 
     } catch (ex) {
