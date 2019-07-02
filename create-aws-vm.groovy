@@ -242,12 +242,12 @@ node {
         if (currentResult == 'SUCCESS') {
             echo 'Successfully created instance'
             message = """<p>***** VM created successfully *****</p>
-            <p>VM Name: ${INSTANCE_NAME}</p><p>IP Address: ${ipAddress}</p>
-            <p>Remote Desktop Connection: <a href="mstsc.exe /v:${ipAddress}">Connect to ${INSTANCE_NAME}</a></p>
+            <p>VM Name: ${INSTANCE_NAME}</p><p>Public DNS Address: ${publicDNS}</p>
+            <p>Remote Desktop Connection: <a href="mstsc.exe /v:${publicDNS}">Connect to ${INSTANCE_NAME}</a></p>
             <p>NOTE: Outlook does not let any program run through links. So to launch remote desktop, right click on the link, copy and paste it on command prompt or windows run [Windows button + r] command, then hit 'Enter'</p>"""
         }
         // Send email notifications to the users who started the build.
-        //emailext (subject: title, body: message, recipientProviders: [[$class: 'RequesterRecipientProvider']] )
+        emailext (subject: title, body: message, recipientProviders: [[$class: 'RequesterRecipientProvider']] )
     }
 }
 return this
