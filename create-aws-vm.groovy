@@ -210,7 +210,7 @@ node {
             println "instanceID ${instanceID}"
 
             def test = 'Reservations[].Instances[].PublicDnsName'
-            proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
+            def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
             proc2.waitFor()
             println proc2.text
             //publicDNS = proc2.text
