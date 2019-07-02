@@ -197,12 +197,11 @@ node {
         stage('Launching instance') {
             def sout = new StringBuilder(), serr = new StringBuilder()
             def commands =  """
-                            echo hi
                             aws ec2 describe-key-pairs
                             """
             def proc = commands.execute()
             proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(1000)
+            proc.waitForOrKill(2000)
             println "out> $sout err> $serr"
             echo "Successfully installed AWS CLI"
         }
