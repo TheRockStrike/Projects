@@ -207,7 +207,7 @@ node {
             def jsonParser = new JsonSlurper()
             instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
             
-            if (DEBUG) {
+            if (parameters.DEBUG) {
                 println result
                 println "instanceID ${instanceID}"
             }
@@ -221,7 +221,7 @@ node {
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            if (DEBUG) {
+            if (parameters.DEBUG) {
                 println "publicDNS ${publicDNS}"
             }
         }
