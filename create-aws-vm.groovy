@@ -212,7 +212,7 @@ node {
             proc2.waitFor()
             publicDNS = jsonParser.parseText(proc2.text).get(0)
             
-            println "publicDNS ${publicDNS}"
+            //println "publicDNS ${publicDNS}"
         }
 
     } catch (ex) {
@@ -245,7 +245,7 @@ node {
             <p>NOTE: Outlook does not let any program run through links. So to launch remote desktop, right click on the link, copy and paste it on command prompt or windows run [Windows button + r] command, then hit 'Enter'</p>"""
         }
         // Send email notifications to the users who started the build.
-        //emailext (subject: title, body: message, recipientProviders: [[$class: 'RequesterRecipientProvider']] )
+        emailext (subject: title, body: message, recipientProviders: [[$class: 'RequesterRecipientProvider']] )
     }
 }
 return this
