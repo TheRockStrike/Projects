@@ -215,6 +215,10 @@ node {
             println "publicDNS ${publicDNS}"
         }
 
+        stage('Retrieving public DNS') {
+            println "hi"
+        }
+
     } catch (ex) {
         echo 'Creating instance failed'
         currentBuild.result = 'FAILURE'
