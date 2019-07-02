@@ -221,7 +221,7 @@ node {
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            if (DEBUG) {
+            if (DEBUG == true) {
                 println "publicDNS ${publicDNS}"
             }
         }
