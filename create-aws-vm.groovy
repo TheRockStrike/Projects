@@ -200,23 +200,19 @@ node {
 
             proc.waitFor()
             def result = proc.text
-            //println result
+            println result
 
             def jsonParser = new JsonSlurper()
             def instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
-            //println "instanceID ${instanceID}"
+            println "instanceID ${instanceID}"
 
             def test = "Reservations[].Instances[].PublicDnsName"
             def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
             proc2.waitFor()
-            publicDNS = jsonParser.parseText(proc2.text).get(0)
+            publicDNS = proc2.text
             
             println "publicDNS ${publicDNS}"
-        }
-
-        stage('Retrieving public DNS') {
-            println "hi"
         }
 
     } catch (ex) {
