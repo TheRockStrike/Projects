@@ -185,15 +185,17 @@ node {
     parameters {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
+        string(name: 'AMI', defaultValue: "", description: 'The Amazon Machine Image (AMI) ID used to specify the OS to run on the instance.')
     }
     try {
         echo """
         Parameter KEY_PAIR_NAME is: ...................... ${KEY_PAIR_NAME}
         Parameter INSTANCE_NAME is: ...................... ${INSTANCE_NAME}
+        Parameter AMI is: ................................ ${AMI}
         """
 
         stage('Launching instance') {
-            def proc = 'aws ec2 run-instances --image-id ami-0781cf90f9cef3437 --count 1 --instance-type t2.micro --key-name jenkins-server'.execute()
+            def proc = "aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME}".execute()
             proc.waitFor()
             println proc.text
         }
