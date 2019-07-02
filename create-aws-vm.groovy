@@ -197,6 +197,7 @@ node {
         stage('Launching instance') {
             def sout = new StringBuilder(), serr = new StringBuilder()
             def commands =  """
+                            echo hi
                             aws ec2 describe-key-pairs
                             """
             def proc = commands.execute()
