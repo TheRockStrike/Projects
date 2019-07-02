@@ -195,10 +195,10 @@ node {
         """
 
         stage('Launching instance') {
-            def sout = new StringBuilder(), serr = new StringBuilder()
-            def proc = 'aws ec2 describe-key-pairs'.execute() && 'aws ec2 describe-instances'.execute()
-            proc.waitFor()
-            println proc.text
+            File script = new File('commands.txt')
+            script.getText().execute()
+            script.waitFor()
+            println script.text
         }
 
     } catch (ex) {
