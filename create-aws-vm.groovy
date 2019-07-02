@@ -204,8 +204,6 @@ node {
             def result = proc.text
             //println result
 
-            sleep 5 // Wait for public DNS to be assigned
-
             def jsonParser = new JsonSlurper()
             def instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
