@@ -183,6 +183,7 @@ node {
     def utils = new PipelineUtilities(this)
     def publicDNS = ""
     def instanceID = ""
+    def jsonParser = new JsonSlurper()
     parameters {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
@@ -203,7 +204,6 @@ node {
             def result = proc.text
             //println result
 
-            def jsonParser = new JsonSlurper()
             instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
             //println "instanceID ${instanceID}"
