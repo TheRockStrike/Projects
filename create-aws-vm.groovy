@@ -209,7 +209,7 @@ node {
 
             //println "instanceID ${instanceID}"
 
-            sleep(5) // Wait for public DNS to be assigned
+            sleep 5 // Wait for public DNS to be assigned
 
             def test = "Reservations[].Instances[].PublicDnsName"
             def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
