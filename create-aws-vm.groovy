@@ -193,7 +193,7 @@ node {
         """
 
         stage('Launching instance') {
-            def proc = "aws ec2 run-instances --image-id ami-0781cf90f9cef3437 --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME}".execute()
+            def proc = 'aws ec2 run-instances --image-id ami-0781cf90f9cef3437 --count 1 --instance-type t2.micro --key-name jenkins-server'.execute()
             proc.waitFor()
             println proc.text
         }
