@@ -200,12 +200,12 @@ node {
 
             proc.waitFor()
             def result = proc.text
-            println result
+            //println result
 
             def jsonParser = new JsonSlurper()
             def instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
-            println "instanceID ${instanceID}"
+            //println "instanceID ${instanceID}"
 
             def test = "Reservations[].Instances[].PublicDnsName"
             def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
