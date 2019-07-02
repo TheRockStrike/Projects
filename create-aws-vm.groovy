@@ -1,5 +1,3 @@
-//import PipelineUtilities
-//import AbstractPipeline
 import hudson.model.*
 import jenkins.model.*
 
@@ -195,10 +193,9 @@ node {
         """
 
         stage('Launching instance') {
-            File script = new File('commands.txt')
-            script.getText().execute()
-            script.waitFor()
-            println script.text
+            def proc = "aws ec2 run-instances --image-id ami-0781cf90f9cef3437 --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME}".execute()
+            proc.waitFor()
+            println proc.text
         }
 
     } catch (ex) {
