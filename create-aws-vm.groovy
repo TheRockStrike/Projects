@@ -2,8 +2,6 @@ import hudson.model.*
 import jenkins.model.*
 import groovy.json.JsonSlurper
 
-ipAddress="0.0.0.0"
-
 class PipelineUtilities extends AbstractPipeline {
     def scriptsPathRelative
     PipelineUtilities(script) {
@@ -202,12 +200,12 @@ node {
 
             proc.waitFor()
             def result = proc.text
-            println result
+            //println result
 
             def jsonParser = new JsonSlurper()
             def instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
-            println "instanceID ${instanceID}"
+            //println "instanceID ${instanceID}"
 
             def test = "Reservations[].Instances[].PublicDnsName"
             def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
@@ -247,7 +245,7 @@ node {
             <p>NOTE: Outlook does not let any program run through links. So to launch remote desktop, right click on the link, copy and paste it on command prompt or windows run [Windows button + r] command, then hit 'Enter'</p>"""
         }
         // Send email notifications to the users who started the build.
-        emailext (subject: title, body: message, recipientProviders: [[$class: 'RequesterRecipientProvider']] )
+        //emailext (subject: title, body: message, recipientProviders: [[$class: 'RequesterRecipientProvider']] )
     }
 }
 return this
