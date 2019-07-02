@@ -182,6 +182,7 @@ abstract class AbstractPipeline implements Serializable {
 node {
     def utils = new PipelineUtilities(this)
     def publicDNS = ""
+    def instanceID = ""
     parameters {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
@@ -194,25 +195,25 @@ node {
         Parameter AMI is: ................................ ${AMI}
         """
 
+        def jsonParser = new JsonSlurper()
+
         stage('Launching instance') {
             def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]"
             def proc = "aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME} --tag-specifications ${tags}".execute()
 
             proc.waitFor()
-            def result = proc.text
-            //println result
+            instanceID = jsonParser.parseText(proc.text).Instances.InstanceId.get(0)
+        }
 
-            def jsonParser = new JsonSlurper()
-            def instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
+        stage('Retrieving public DNS') {
+            def titles = "Reservations[].Instances[].PublicDnsName"
+            def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${titles}".execute()
 
-            //println "instanceID ${instanceID}"
-
-            def test = "Reservations[].Instances[].PublicDnsName"
-            def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
-            proc2.waitFor()
-            publicDNS = jsonParser.parseText(proc2.text).get(0)
+            proc.waitFor()
+            publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            //println "publicDNS ${publicDNS}"
+            println "publicDNS ${publicDNS}"
+            }
         }
 
     } catch (ex) {
