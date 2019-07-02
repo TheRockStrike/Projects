@@ -194,11 +194,6 @@ node {
         Parameter INSTANCE_NAME is: ...................... ${INSTANCE_NAME}
         """
 
-        stage('Checkout Source...') {
-            echo "Branch name: ${utils.getBranchName()}"
-            utils.checkoutGitBranch(utils.getBranchName())
-        }
-
         stage('Launching instance') {
             def sout = new StringBuilder(), serr = new StringBuilder()
             def commands =  """
