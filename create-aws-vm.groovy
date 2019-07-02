@@ -213,9 +213,7 @@ node {
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
             println "publicDNS ${publicDNS}"
-            }
         }
-
     } catch (ex) {
         echo 'Creating instance failed'
         currentBuild.result = 'FAILURE'
