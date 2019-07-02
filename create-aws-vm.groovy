@@ -206,9 +206,8 @@ node {
 
             def jsonParser = new JsonSlurper()
             def instanceID = jsonParser.parseText(result).Instances.InstanceID
-            println instanceID.getClass()
-
             println "instanceID ${instanceID}"
+            println instanceID.getClass()
 
             def test = 'Reservations[].Instances[].PublicDnsName'
             proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
