@@ -1,5 +1,6 @@
 import hudson.model.*
 import jenkins.model.*
+import groovy.json.JsonSlurper
 
 ipAddress="0.0.0.0"
 
@@ -182,6 +183,7 @@ abstract class AbstractPipeline implements Serializable {
 //----------------------------------
 node {
     def utils = new PipelineUtilities(this)
+    def publicDNS = ""
     parameters {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
@@ -200,6 +202,11 @@ node {
 
             proc.waitFor()
             println proc.text
+
+            def slurper = new JsonSlurper()
+            publicDNS = slurper.parseText(proc.text)
+            
+            println "publicDNS ${publicDNS}"
         }
 
     } catch (ex) {
