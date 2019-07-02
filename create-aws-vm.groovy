@@ -196,7 +196,7 @@ node {
 
         stage('Launching instance') {
             def sout = new StringBuilder(), serr = new StringBuilder()
-            def proc = 'aws ec2 describe-key-pairs'.execute()
+            def proc = 'aws ec2 describe-key-pairs'.execute() && 'aws ec2 describe-instances'.execute()
             proc.waitFor()
             println proc.text
         }
