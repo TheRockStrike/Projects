@@ -211,12 +211,12 @@ node {
         }
 
         stage('Retrieving public DNS') {
-            def jsonParser2 = new JsonSlurper()
+            def jsonParser = new JsonSlurper()
             def titles = "Reservations[].Instances[].PublicDnsName"
-            def proc2 = "aws ec2 describe-instances --instance-id ${instanceID} --query ${titles}".execute()
-            proc2.waitFor()
+            def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${titles}".execute()
+            proc.waitFor()
             
-            publicDNS = jsonParser2.parseText(proc2.text).get(0)
+            publicDNS = jsonParser.parseText(proc.text).get(0)
             
             println "publicDNS ${publicDNS}"
         }
