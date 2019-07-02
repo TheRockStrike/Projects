@@ -201,10 +201,11 @@ node {
             def proc = "aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME} --tag-specifications ${tags}".execute()
 
             proc.waitFor()
-            println proc.text
+            def result = proc.text
+            println result
 
             def slurper = new JsonSlurper()
-            publicDNS = slurper.parseText(proc.text)
+            publicDNS = slurper.parseText(result)
             
             println "publicDNS ${publicDNS}"
         }
