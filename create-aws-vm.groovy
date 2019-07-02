@@ -188,7 +188,7 @@ node {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
         string(name: 'AMI', defaultValue: "", description: 'The Amazon Machine Image (AMI) ID used to specify the OS to run on the instance.')
-        bool(name: 'DEBUG', defaultValue: false, description: 'Click to enable debugging in the console output.')
+        booleanParam(name: 'DEBUG', defaultValue: false, description: 'Click to enable debugging in the console output.')
     }
     try {
         echo """
@@ -207,7 +207,7 @@ node {
             def jsonParser = new JsonSlurper()
             instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
             
-            if (DEBUG == true) {
+            if (DEBUG) {
                 println result
                 println "instanceID ${instanceID}"
             }
@@ -221,7 +221,7 @@ node {
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            if (DEBUG == true) {
+            if (DEBUG) {
                 println "publicDNS ${publicDNS}"
             }
         }
