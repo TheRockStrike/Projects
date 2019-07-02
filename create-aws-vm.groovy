@@ -207,7 +207,7 @@ node {
             def jsonParser = new JsonSlurper()
             def instanceID = jsonParser.parseText(result).Instances.InstanceId
 
-            println "instanceID ${instanceID}"
+            println "instanceID" instanceID.get(0)
             print "type"
             println instanceID.getClass()
 
