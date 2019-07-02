@@ -197,7 +197,7 @@ node {
         stage('Launching instance') {
             def sout = new StringBuilder(), serr = new StringBuilder()
             def commands =  """
-                            aws ec2 describe-key-pairs
+                            aws ec2 describe-key-pairs && aws ec2 describe-instances
                             """
             def proc = commands.execute()
             proc.consumeProcessOutput(sout, serr)
