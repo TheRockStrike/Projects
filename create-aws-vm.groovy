@@ -201,7 +201,7 @@ node {
                             """
             def proc = commands.execute()
             proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(2000)
+            proc.waitForProcessOutput()
             println "out> $sout err> $serr"
             echo "Successfully installed AWS CLI"
         }
