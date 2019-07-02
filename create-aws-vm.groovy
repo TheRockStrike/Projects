@@ -183,7 +183,7 @@ abstract class AbstractPipeline implements Serializable {
 //----------------------------------
 node {
     def utils = new PipelineUtilities(this)
-    def publicDNS = "----"
+    def publicDNS = ""
     parameters {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
@@ -205,9 +205,9 @@ node {
             println result
 
             def jsonParser = new JsonSlurper()
-            def instanceID = jsonParser.parseText(result).Instances.InstanceID
+            def instanceID = jsonParser.parseText(result).Instances.InstanceId
+
             println "instanceID ${instanceID}"
-            println instanceID.getClass()
 
             def test = 'Reservations[].Instances[].PublicDnsName'
             proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${test}".execute()
