@@ -198,10 +198,10 @@ node {
         Parameter DEBUG is: .............................. ${DEBUG}
         """
 
-        stage('Checkout Source...') {
-            echo "Branch name: ${utils.getBranchName()}"
-            utils.checkoutGitBranch(utils.getBranchName())
-        }
+        // stage('Checkout Source...') {
+        //     echo "Branch name: ${utils.getBranchName()}"
+        //     utils.checkoutGitBranch(utils.getBranchName())
+        // }
 
         stage('Launching instance') {
             def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]"
@@ -238,7 +238,7 @@ node {
             def proc = "aws ssm send-command --document-name ${command} --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
 
             proc.waitFor()
-            
+
         }
 
     } catch (ex) {
