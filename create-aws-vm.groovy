@@ -209,7 +209,7 @@ node {
             
             println "Debug is $DEBUG"
 
-            if (DEBUG) {
+            if ("$DEBUG") {
                 println result
                 println "instanceID ${instanceID}"
             }
@@ -223,7 +223,7 @@ node {
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            if (parameters.DEBUG) {
+            if ("${DEBUG}") {
                 println "publicDNS ${publicDNS}"
             }
         }
