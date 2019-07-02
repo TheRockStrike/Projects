@@ -239,6 +239,8 @@ node {
 
             proc.waitFor()
 
+            def result = proc.text
+            println "result ${result}"
         }
 
     } catch (ex) {
