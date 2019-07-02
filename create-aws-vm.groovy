@@ -195,7 +195,9 @@ node {
         """
 
         stage('Launching instance') {
-            def proc = 'aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME} --tag-specifications ResourceType=instance,Tags=[{Key=Name,Value=${AMI}}]'.execute()
+            def proc = 'aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME}'.execute()
+
+            // --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=${AMI}}]'
             proc.waitFor()
             println proc.text
         }
