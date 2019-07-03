@@ -237,7 +237,10 @@ node {
             def parameters = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
             def proc = "aws ssm send-command --document-name ${command} --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
 
-            proc.waitFor()
+            def output, error
+            proc.waitForProcessOutput(out, error)
+            println "output: $output"
+            println "error: $error"
 
             def result = proc.text
             println "result ${result}"
