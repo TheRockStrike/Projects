@@ -239,7 +239,7 @@ node {
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
-            proc.waitFor())
+            proc.waitFor()
             println "out> $sout err> $serr"
 
             //def result = proc.text
