@@ -222,8 +222,10 @@ node {
             def proc = "aws ec2 associate-iam-instance-profile --instance-id ${instanceID} --iam-instance-profile Name=EnablesEC2ToAccessSystemsManagerRole".execute()
             proc.waitFor()
 
+            def result = proc.text
+
             if (DEBUG.toBoolean()) {
-                println proc.text
+                println result
             }            
         }
 
