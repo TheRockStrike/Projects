@@ -238,7 +238,7 @@ node {
             def proc = "aws ssm send-command --document-name ${command} --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
 
             def output, error
-            proc.waitForProcessOutput(out, error)
+            proc.waitForProcessOutput(output, error)
             println "output: $output"
             println "error: $error"
 
