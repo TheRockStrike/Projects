@@ -218,6 +218,15 @@ node {
             }
         }
 
+        stage('Attaching SSM IAM role') {
+            def proc = "aws ec2 associate-iam-instance-profile --instance-id ${instanceID} --iam-instance-profile Name=EnablesEC2ToAccessSystemsManagerRole".execute()
+            proc.waitFor()
+
+            if (DEBUG.toBoolean()) {
+                println proc.text
+            }            
+        }
+
         stage('Retrieving public DNS') {
             def jsonParser = new JsonSlurper()
             def titles = "Reservations[].Instances[].PublicDnsName"
@@ -240,7 +249,7 @@ node {
 
             def params = '{"sourceType":["GitHub"],"sourceInfo":["{owner: kennyakers, repository: Projects, path: ConnectNewVirtualMachineToJenkins.ps1}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
-            def proc = "aws ssm send-command --document-name AWS-RunRemoteScript --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters ${params} --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-1".execute()
+            def proc = "aws ssm send-command --document-name \"AWS-RunRemoteScript\" --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters '{\"sourceType\":[\"GitHub\"],\"sourceInfo\":[\"{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}\"],\"commandLine\":[\".\\ConnectNewVirtualMachineToJenkins.ps1\"],\"workingDirectory\":[\"\"],\"executionTimeout\":[\"3600\"]}' --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-2".execute()
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
