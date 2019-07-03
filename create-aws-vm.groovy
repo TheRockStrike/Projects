@@ -204,7 +204,7 @@ node {
         // }
 
         stage('Launching instance') {
-            def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]"
+            def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]" // To name the instance on launch
             def proc = "aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME} --tag-specifications ${tags}".execute()
             proc.waitFor()
 
@@ -231,10 +231,10 @@ node {
             }
         }
 
-        stage ('Attaching instance to Jenkins') {
+        stage('Attaching instance to Jenkins') { // In Progress
             def command = "AWS-RunRemoteScript"
             def targets = "Key=instanceids,Values=${instanceID}"
-            def parameters = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"test_script.ps1\"}"],"commandLine":[".\\test_script.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def parameters = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
             def proc = "aws ssm send-command --document-name ${command} --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
 
             proc.waitFor()
