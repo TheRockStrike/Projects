@@ -220,13 +220,14 @@ node {
 
         stage('Attaching SSM IAM role') {
             def proc = "aws ec2 associate-iam-instance-profile --instance-id ${instanceID} --iam-instance-profile Name=EnablesEC2ToAccessSystemsManagerRole".execute()
+            def sout = new StringBuilder(), serr = new StringBuilder()
+            proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
+            println "out> $sout err> $serr"
 
-            def result = proc.text
-
-            if (DEBUG.toBoolean()) {
-                println result
-            }            
+            // if (DEBUG.toBoolean()) {
+            //     println proc.text
+            // }            
         }
 
         stage('Retrieving public DNS') {
