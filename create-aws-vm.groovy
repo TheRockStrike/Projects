@@ -2,6 +2,7 @@ import hudson.model.*
 import jenkins.model.*
 import groovy.json.JsonSlurper
 import com.amazonaws.services.ec2.*
+import com.amazonaws.services.ec2.model.*
 
 class PipelineUtilities extends AbstractPipeline {
     def scriptsPathRelative
@@ -231,51 +232,51 @@ node {
 
         }
 
-        // stage('Attaching SSM IAM role') {
-        //     def proc = "aws ec2 associate-iam-instance-profile --instance-id ${instanceID} --iam-instance-profile Name=EnablesEC2ToAccessSystemsManagerRole".execute()
-        //     def sout = new StringBuilder(), serr = new StringBuilder()
-        //     proc.consumeProcessOutput(sout, serr)
-        //     proc.waitFor()
-        //     println "out> $sout err> $serr"
+        stage('Attaching SSM IAM role') {
+            def proc = "aws ec2 associate-iam-instance-profile --instance-id ${instanceID} --iam-instance-profile Name=EnablesEC2ToAccessSystemsManagerRole".execute()
+            def sout = new StringBuilder(), serr = new StringBuilder()
+            proc.consumeProcessOutput(sout, serr)
+            proc.waitFor()
+            println "out> $sout err> $serr"
 
-        //     // if (DEBUG.toBoolean()) {
-        //     //     println proc.text
-        //     // }            
-        // }
+            // if (DEBUG.toBoolean()) {
+            //     println proc.text
+            // }            
+        }
 
-        // stage('Retrieving public DNS') {
-        //     def jsonParser = new JsonSlurper()
-        //     def titles = "Reservations[].Instances[].PublicDnsName"
-        //     def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${titles}".execute()
-        //     proc.waitFor()
+        stage('Retrieving public DNS') {
+            def jsonParser = new JsonSlurper()
+            def titles = "Reservations[].Instances[].PublicDnsName"
+            def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${titles}".execute()
+            proc.waitFor()
             
-        //     publicDNS = jsonParser.parseText(proc.text).get(0)
+            publicDNS = jsonParser.parseText(proc.text).get(0)
             
-        //     if (DEBUG.toBoolean()) {
-        //         println "publicDNS ${publicDNS}"
-        //     }
-        // }
+            if (DEBUG.toBoolean()) {
+                println "publicDNS ${publicDNS}"
+            }
+        }
 
 
-        // stage('Attaching instance to Jenkins') { // In Progress
-        // /*
-        //     def targets = "Key=instanceids,Values=${instanceID}"
-        //     def parameters = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
-        //     def proc = "aws ssm send-command --document-name AWS-RunRemoteScript --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
-        //     */
+        stage('Attaching instance to Jenkins') { // In Progress
+        /*
+            def targets = "Key=instanceids,Values=${instanceID}"
+            def parameters = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def proc = "aws ssm send-command --document-name AWS-RunRemoteScript --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
+            */
 
-        //     def params = '{"sourceType":["GitHub"],"sourceInfo":["{owner: kennyakers, repository: Projects, path: ConnectNewVirtualMachineToJenkins.ps1}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def params = '{"sourceType":["GitHub"],"sourceInfo":["{owner: kennyakers, repository: Projects, path: ConnectNewVirtualMachineToJenkins.ps1}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
-        //     def proc = "aws ssm send-command --document-name \"AWS-RunRemoteScript\" --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters '{\"sourceType\":[\"GitHub\"],\"sourceInfo\":[\"{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}\"],\"commandLine\":[\".\\ConnectNewVirtualMachineToJenkins.ps1\"],\"workingDirectory\":[\"\"],\"executionTimeout\":[\"3600\"]}' --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-2".execute()
+            def proc = "aws ssm send-command --document-name \"AWS-RunRemoteScript\" --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters '{\"sourceType\":[\"GitHub\"],\"sourceInfo\":[\"{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}\"],\"commandLine\":[\".\\ConnectNewVirtualMachineToJenkins.ps1\"],\"workingDirectory\":[\"\"],\"executionTimeout\":[\"3600\"]}' --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-2".execute()
 
-        //     def sout = new StringBuilder(), serr = new StringBuilder()
-        //     proc.consumeProcessOutput(sout, serr)
-        //     proc.waitFor()
-        //     println "out> $sout err> $serr"
+            def sout = new StringBuilder(), serr = new StringBuilder()
+            proc.consumeProcessOutput(sout, serr)
+            proc.waitFor()
+            println "out> $sout err> $serr"
 
-        //     //def result = proc.text
-        //     //println "result ${result}"
-        // }
+            //def result = proc.text
+            //println "result ${result}"
+        }
 
     } catch (ex) {
         echo 'Creating instance failed'
