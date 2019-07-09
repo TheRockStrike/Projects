@@ -1,8 +1,8 @@
 import hudson.model.*
 import jenkins.model.*
 import groovy.json.JsonSlurper
-import com.amazonaws.services.ec2.*
-import com.amazonaws.services.ec2.model.*
+import com.amazonaws.services.ec2.model.RunInstancesResult
+import com.amazonaws.services.ec2.model.RunInstancesRequest
 
 class PipelineUtilities extends AbstractPipeline {
     def scriptsPathRelative
