@@ -188,7 +188,7 @@ node {
         string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
         string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
         string(name: 'AMI', defaultValue: "", description: 'The Amazon Machine Image (AMI) ID used to specify the OS to run on the instance.')
-        booleanParam(name: 'DEBUG', defaultValue: false, description: 'Click to enable debugging in the console output.')
+        booleanParam(name: 'DEBUG', defaultValue: true, description: 'Click to enable debugging in the console output.')
     }
     try {
         echo """
@@ -241,8 +241,18 @@ node {
             }            
         }
 
-        stage('Waiting 10 mins for IAM role assignment to take effect') {
-            sleep(time:10, unit:"MINUTES")
+        stage('Waiting for IAM role assignment to take effect') {
+            // sleep(time:5, unit:"MINUTES")
+            def jsonParser = new JsonSlurper()
+            while (true) {
+                def query = "Reservations[].Instances[].IamInstanceProfile"
+                def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${query}".execute()
+                proc.waitFor()
+
+                if (!jsonParser.parseText(proc.text).get(0).isEmpty()) {
+                    break // Break out of while loop and continue to next stage.
+                }
+            }
         }
 
         stage('Retrieving public DNS') {
@@ -265,10 +275,10 @@ node {
             def parameters = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
             def proc = "aws ssm send-command --document-name AWS-RunRemoteScript --document-version 1 --targets ${targets} --parameters ${parameters} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
             */
-
+            
             def params = '{"sourceType":["GitHub"],"sourceInfo":["{owner: kennyakers, repository: Projects, path: ConnectNewVirtualMachineToJenkins.ps1}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
-            def proc = "aws ssm send-command --document-name \"AWS-RunRemoteScript\" --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters '{\"sourceType\":[\"GitHub\"],\"sourceInfo\":[\"{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}\"],\"commandLine\":[\".\\ConnectNewVirtualMachineToJenkins.ps1\"],\"workingDirectory\":[\"\"],\"executionTimeout\":[\"3600\"]}' --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-2".execute()
+            def proc = "aws ssm send-command --document-name \"AWS-RunRemoteScript\" --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters ${params} --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-2".execute()
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
