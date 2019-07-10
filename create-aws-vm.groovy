@@ -242,7 +242,7 @@ node {
         }
 
         stage('Waiting 5 mins for IAM role assignment to take effect') {
-            sleep(time:5, unit:"MINUTES")
+            //sleep(time:5, unit:"MINUTES")
         }
 
         stage('Retrieving public DNS') {
