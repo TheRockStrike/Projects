@@ -266,11 +266,10 @@ node {
             def params = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"test_script.ps1\"}"],"commandLine":[".\\test_script.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
             def doc = "AWS-RunRemoteScript"
-            def version = "1"
             def concurrency = "50"
             def errors = "0"
 
-            def proc = "aws ssm send-command --document-name ${doc} --document-version ${version} --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency ${concurrency} --max-errors ${errors} --region us-west-1".execute()
+            def proc = "aws ssm send-command --document-name ${doc} --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency ${concurrency} --max-errors ${errors} --region us-west-1".execute()
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
