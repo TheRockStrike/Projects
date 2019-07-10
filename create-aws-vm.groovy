@@ -232,7 +232,7 @@ node {
         }
 
         stage('Waiting 10 mins for IAM role assignment to take effect') {
-            sleep(10, "MINUTES")
+            sleep(time:10, unit:"MINUTES")
         }
 
         stage('Retrieving public DNS') {
