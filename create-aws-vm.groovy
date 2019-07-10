@@ -260,20 +260,12 @@ node {
 
 
         stage('Attaching instance to Jenkins') { // In Progress
-        
+            
             def targets = "Key=instanceids,Values=${instanceID}"
 
-            def params = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"ConnectNewVirtualMachineToJenkins.ps1\"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def params = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": \"kennyakers\", \"repository\": \"Projects\", \"path\": \"test_script.ps1\"}"],"commandLine":[".\\test_script.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
-            def proc = "aws ssm send-command --document-name AWS-RunRemoteScript --document-version 1 --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency 50 --max-errors 0 --region us-east-2".execute()
-            
-            
-            /*
-            def params = '{"sourceType":["GitHub"],"sourceInfo":["{owner: kennyakers, repository: Projects, path: ConnectNewVirtualMachineToJenkins.ps1}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
-
-            def proc = "aws ssm send-command --document-name AWS-RunRemoteScript --document-version \"1\" --targets \"Key=instanceids,Values=${instanceID}\" --parameters ${params} --timeout-seconds 600 --max-concurrency \"50\" --max-errors \"0\" --region us-west-2".execute()
-            */
-
+            def proc = "aws ssm send-command --document-name "AWS-RunRemoteScript" --document-version "1" --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --region us-west-1".execute()
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
