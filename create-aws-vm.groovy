@@ -263,7 +263,7 @@ node {
             
             def targets = "Key=instanceids,Values=${instanceID}"
 
-            def params = '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\": kennyakers, \"repository\": \"Projects\", \"path\": \"test_script.ps1\"}"],"commandLine":[".\\test_script.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def params = '{"sourceType":["GitHub"],"sourceInfo":["{owner: kennyakers, repository: Projects, path: test_script.ps1}"],"commandLine":[".\\test_script.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
             def doc = "AWS-RunRemoteScript"
             def concurrency = "50"
