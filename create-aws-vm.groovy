@@ -1,8 +1,6 @@
 import hudson.model.*
 import jenkins.model.*
 import groovy.json.JsonSlurper
-import com.amazonaws.services.ec2.model.RunInstancesResult
-import com.amazonaws.services.ec2.model.RunInstancesRequest
 
 class PipelineUtilities extends AbstractPipeline {
     def scriptsPathRelative
@@ -206,16 +204,6 @@ node {
         // }
 
         stage('Launching instance') {
-
-            RunInstancesRequest runInstance = new RunInstancesRequest()
-            runInstance.withImageId("${AMI}").withInstanceType(InstanceType.T1Micro).withMinCount(1).withMaxCount(1).withKeyName("${KEY_PAIR_NAME}")
-            
-            RunInstancesResult result = amazonEC2CLient.runInstances(runInstance)
-
-            println result.toString()
-
-            /*
-
             def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]" // To name the instance on launch
             def proc = "aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME} --tag-specifications ${tags}".execute()
             proc.waitFor()
@@ -228,7 +216,6 @@ node {
                 println result
                 println "instanceID ${instanceID}"
             }
-*/
 
         }
 
@@ -244,10 +231,14 @@ node {
             // }            
         }
 
+        stage('Waiting 10 mins for IAM role assignment to take effect') {
+            sleep(10, "MINUTES")
+        }
+
         stage('Retrieving public DNS') {
             def jsonParser = new JsonSlurper()
-            def titles = "Reservations[].Instances[].PublicDnsName"
-            def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${titles}".execute()
+            def query = "Reservations[].Instances[].PublicDnsName"
+            def proc = "aws ec2 describe-instances --instance-id ${instanceID} --query ${query}".execute()
             proc.waitFor()
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
