@@ -263,7 +263,7 @@ node {
             
             def targets = "Key=instanceids,Values=${instanceID}"
 
-            def params = '{"sourceType":["GitHub"],"sourceInfo":["{"kennyakers", "Projects", ConnectNewVirtualMachineToJenkins.ps1}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def params = '{"sourceType":["GitHub"],"sourceInfo":[{"kennyakers", "Projects", "ConnectNewVirtualMachineToJenkins.ps1"}],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
             def doc = "AWS-RunRemoteScript"
             def concurrency = "50"
