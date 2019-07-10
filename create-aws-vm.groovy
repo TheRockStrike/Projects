@@ -224,11 +224,10 @@ node {
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
-            println "out> $sout err> $serr"
-
-            // if (DEBUG.toBoolean()) {
-            //     println proc.text
-            // }            
+            
+            if (DEBUG.toBoolean()) {
+                 println "out> $sout err> $serr"
+            }            
         }
 
         stage('Waiting 10 mins for IAM role assignment to take effect') {
