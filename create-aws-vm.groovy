@@ -219,6 +219,17 @@ node {
 
         }
 
+        stage('Waiting for instance to reach running state') {
+            def proc = "aws ec2 wait instance-running --instance-id ${instanceID}"
+            def sout = new StringBuilder(), serr = new StringBuilder()
+            proc.consumeProcessOutput(sout, serr)
+            proc.waitFor()
+            
+            if (DEBUG.toBoolean()) {
+                 println "out> $sout err> $serr"
+            }        
+        }
+
         stage('Attaching SSM IAM role') {
             def proc = "aws ec2 associate-iam-instance-profile --instance-id ${instanceID} --iam-instance-profile Name=EnablesEC2ToAccessSystemsManagerRole".execute()
             def sout = new StringBuilder(), serr = new StringBuilder()
