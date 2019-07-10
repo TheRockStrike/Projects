@@ -220,7 +220,7 @@ node {
         }
 
         stage('Waiting for instance to reach running state') {
-            def proc = "aws ec2 wait instance-running --instance-id ${instanceID}"
+            def proc = "aws ec2 wait instance-running --instance-id ${instanceID}".execute()
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
