@@ -260,16 +260,21 @@ node {
 
 
         stage('Attaching instance to Jenkins') { // In Progress
-            
+            /*
             def targets = "Key=instanceids,Values=${instanceID}"
 
-            def params = '{"sourceType":["GitHub"],"sourceInfo":[{"kennyakers", "Projects", "ConnectNewVirtualMachineToJenkins.ps1"}],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
+            def params = '{"sourceType":["GitHub"],"sourceInfo":["{"kennyakers", "Projects", "ConnectNewVirtualMachineToJenkins.ps1"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
 
             def doc = "AWS-RunRemoteScript"
             def concurrency = "50"
             def errors = "0"
 
             def proc = "aws ssm send-command --document-name ${doc} --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency ${concurrency} --max-errors ${errors} --region us-west-1".execute()
+            */
+
+            def psScript = '"param(","[Parameter(Mandatory=$true)][string]$VmName,","[Parameter(Mandatory=$false)][string]$UserToken = \"openlabbuildmaster:11d3463e22ab89adbb77750e1223d1990d\",","[Parameter(Mandatory=$false)][string]$ScriptsSourceDir = \"C:\\_GIT\\JenkinsScripts\\src\\agilent\\sid\\cicd\\scripts\\ps\\\",","[Parameter(Mandatory=$false)][string]$ScriptsDestDir = \"C:\\Scripts\\\",","[Parameter(Mandatory=$false)][string]$JenkinsUrl = \"http://scs-jenkins-4.scs.agilent.com:8080\"",")","","Write-Host \"VmName ............ $VmName\"","Write-Host \"UserToken ......... $UserToken\"","Write-Host \"ScriptsSourceDir .. $ScriptsSourceDir\"","Write-Host \"ScriptsDestDir .... $ScriptsDestDir\"","Write-Host \"JenkinsUrl ........ $JenkinsUrl\"","","","$ErrorActionPreference = 'Stop'","","Set-Item WSMan:\\localhost\\Client\\TrustedHosts -Value $vmName -Force","","$userAdmin = \"admin\"","$adminPwd = \"3000hanover\" | ConvertTo-SecureString -asPlainText -Force","$creds =New-Object System.Management.Automation.PSCredential($userAdmin, $adminPwd)","","$psSession = New-PSSession -ComputerName $vmName -Credential $creds","","Copy-Item -ToSession $psSession -Path $ScriptsSourceDir -Destination $ScriptsDestDir -Recurse -ErrorAction Stop","","$nodeSecret = Invoke-Command -Session $psSession -ScriptBlock {","","$ErrorActionPreference = 'Stop'","","Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser | Out-Null","","cd \"$Using:ScriptsDestDir\" | Out-Null","","Invoke-Expression \".\\Install_Jenkins_CLI_and_Agent.ps1 -Jenkins_Server_Url $Using:JenkinsUrl\"","","Invoke-Expression \".\\CreateJenkinsNode.ps1 -jenkinsUrl $Using:JenkinsUrl -jenkinsNode $Using:VmName\"","","$nodeSecret = Invoke-Expression \".\\GetNodeSecret.ps1 -VmName $Using:VmName -UserToken $Using:UserToken -jenkinsUrl $Using:JenkinsUrl\"","return $nodeSecret","}","","","Write-Host \"The Jenkins Secret key for Node: $VmName is: $nodeSecret\"","","Invoke-Expression \".\\StartJenkinsSlave.ps1 -jenkinsMasterURL $JenkinsUrl -nodeName $VmName -slaveSecret $nodeSecret\"","","Get-PSSession | Remove-PSSession","","Write-Host \"The VM should now be attached to Jenkins\"","return"'
+
+            def proc = "aws ssm send-command --document-name "AWS-RunPowerShellScript" --document-version "1" --targets "Key=instanceids,Values=i-0bbdce0e681c22d9d" --parameters '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":[${psScript}]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --region us-west-1".execute()
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
