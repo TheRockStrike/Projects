@@ -260,7 +260,7 @@ node {
 
 
         stage('Attaching instance to Jenkins') { // In Progress
-            /*
+         
             def targets = "Key=instanceids,Values=${instanceID}"
 
             def params = '{"sourceType":["GitHub"],"sourceInfo":["{"kennyakers", "Projects", "ConnectNewVirtualMachineToJenkins.ps1"}"],"commandLine":[".\\ConnectNewVirtualMachineToJenkins.ps1"],"workingDirectory":[""],"executionTimeout":["3600"]}'
@@ -269,15 +269,16 @@ node {
             def concurrency = "50"
             def errors = "0"
 
-            def proc = "aws ssm send-command --document-name ${doc} --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency ${concurrency} --max-errors ${errors} --region us-west-1".execute()
-            */
+            // def proc = "aws ssm send-command --document-name ${doc} --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency ${concurrency} --max-errors ${errors} --region us-west-1".execute()
+            
 
-            def proc = "wget https://raw.githubusercontent.com/kennyakers/Projects/master/ConnectNewVirtualMachineToJenkins.ps1".execute()
+            // def sout = new StringBuilder(), serr = new StringBuilder()
+            // proc.consumeProcessOutput(sout, serr)
+            // proc.waitFor()
+            // println "out> $sout err> $serr"
 
-            def sout = new StringBuilder(), serr = new StringBuilder()
-            proc.consumeProcessOutput(sout, serr)
-            proc.waitFor()
-            println "out> $sout err> $serr"
+
+            sh "aws ssm send-command --document-name ${doc} --targets ${targets} --parameters ${params} --timeout-seconds 600 --max-concurrency ${concurrency} --max-errors ${errors} --region us-west-1"
 
             //def result = proc.text
             //println "result ${result}"
