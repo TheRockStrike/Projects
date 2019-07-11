@@ -276,8 +276,9 @@ node {
 
             def target = "Key=instanceids,Values=${instanceID}"
             def params = '{"workingDirectory":[""],"executionTimeout":["3600"],"commands":[${psScript}]}'
+            def doc = "AWS-RunPowerShellScript"
 
-            def proc = "aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets ${target} --parameters ${params} --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --region us-west-1".execute()
+            def proc = "aws ssm send-command --document-name ${doc} --targets ${target} --parameters ${params} --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --region us-west-1".execute()
 
             def sout = new StringBuilder(), serr = new StringBuilder()
             proc.consumeProcessOutput(sout, serr)
