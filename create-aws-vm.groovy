@@ -260,7 +260,8 @@ node {
 
 
         stage('Attaching instance to Jenkins') { // In Progress
-            def psScript = 'param(
+            def psScript = """"
+                    param(
                             [Parameter(Mandatory=$true)][string]$VmName, 
                             [Parameter(Mandatory=$false)][string]$UserToken = "openlabbuildmaster:11d3463e22ab89adbb77750e1223d1990d",
                             [Parameter(Mandatory=$false)][string]$ScriptsSourceDir = "C:\_GIT\JenkinsScripts\src\agilent\sid\cicd\scripts\ps\",
@@ -313,7 +314,6 @@ node {
                         return $nodeSecret
                     }
 
-
                     Write-Host "The Jenkins Secret key for Node: $VmName is: $nodeSecret"
 
                     ## On the Remote VM/Computer run the PS script that connects the VM/Computer to Jenkins
@@ -323,7 +323,8 @@ node {
                     Get-PSSession | Remove-PSSession
 
                     Write-Host "The VM should now be attached to Jenkins"
-                    return'
+                    return
+                    """
             utils.runPowerShell("${psScript}")
         }
 
