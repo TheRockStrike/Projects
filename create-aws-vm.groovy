@@ -46,7 +46,7 @@ class PipelineUtilities extends AbstractPipeline {
     }
 
     // Checkout specified git branch from specified git repository 
-    void checkoutGitBranch(String branch, String repo='ssh://git@sparksource.collaboration.agilent.com:7999/sid/jenkinsscripts.git')
+    void checkoutGitBranch(String branch, String repo='ssh://git@sparksource.collaboration.agilent.com:7999/siddev/kenakers-repo.git')
     {
         script.println "Checking out source from Repository: $repo, Branch: $branch"
         script.git credentialsId: 'a4f7851b-5e64-4301-a5cc-86eb9d8856be', branch: "$branch", url: "$repo"
