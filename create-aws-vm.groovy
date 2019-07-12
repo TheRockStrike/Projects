@@ -183,7 +183,7 @@ node {
     def utils = new PipelineUtilities(this)
     def publicDNS = ""
     def instanceID = ""
-    def userAdmin = '\Administrator'
+    def userAdmin = '\\Administrator'
     def adminPwd = 'GAjIzjTNcbpi&n!*c%6$UJv8yVS;Z8iZ' // Will need to get programmatically
     
     parameters {
