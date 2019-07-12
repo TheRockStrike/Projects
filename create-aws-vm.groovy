@@ -49,7 +49,7 @@ class PipelineUtilities extends AbstractPipeline {
     void checkoutGitBranch(String branch, String repo='ssh://git@sparksource.collaboration.agilent.com:7999/siddev/kenakers-repo.git')
     {
         script.println "Checking out source from Repository: $repo, Branch: $branch"
-        script.git credentialsId: 'a4f7851b-5e64-4301-a5cc-86eb9d8856be', branch: "$branch", url: "$repo"
+        script.git credentialsId: '022dccce-8996-43d7-a5c3-67473b642ccf', branch: "$branch", url: "$repo"
     }
 
     //Stop antivirus to speed up copy.
