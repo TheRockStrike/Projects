@@ -202,10 +202,10 @@ node {
         Debug is: .............................. ${params.DEBUG}
         """
 
-        stage('Checkout Source...') {
-            echo "Branch name: ${utils.getBranchName()}"
-            utils.checkoutGitBranch(utils.getBranchName())
-        }
+        // stage('Checkout Source...') {
+        //     echo "Branch name: ${utils.getBranchName()}"
+        //     utils.checkoutGitBranch(utils.getBranchName())
+        // }
         
         stage('Launching instance') {
             def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${params.INSTANCE_NAME}}]" // To name the instance on launch
