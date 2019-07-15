@@ -201,7 +201,7 @@ node {
         """
 
         stage('Checkout Source...') {
-            echo "Branch name: ${utils.getBranchName()}"
+            echo "Branch name: ${utils.getBranchName(repo='https://sparksource.collaboration.agilent.com/scm/siddev/kenakers-repo.git')}"
             utils.checkoutGitBranch(utils.getBranchName())
         }
         /*
@@ -259,6 +259,7 @@ node {
                 println "publicDNS ${publicDNS}"
             }
         }
+        // Install java using PowerShell job
         */
 
 
