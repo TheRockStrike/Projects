@@ -195,11 +195,11 @@ node {
     }
     try {
         echo """
-        Key pair name is: ...................... ${parameters.KEY_NAME}
-        Instance name is: ...................... ${parameters.INSTANCE_NAME}
-        AMI is: ................................ ${parameters.AMI}
-        Java version is: ....................... ${parameters.JAVA_VERSION}
-        Debug is: .............................. ${parameters.DEBUG}
+        Key pair name is: ...................... ${params.KEY_NAME}
+        Instance name is: ...................... ${params.INSTANCE_NAME}
+        AMI is: ................................ ${params.AMI}
+        Java version is: ....................... ${params.JAVA_VERSION}
+        Debug is: .............................. ${params.DEBUG}
         """
 
         stage('Checkout Source...') {
@@ -208,15 +208,15 @@ node {
         }
         
         stage('Launching instance') {
-            def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${parameters.INSTANCE_NAME}}]" // To name the instance on launch
-            def proc = "aws ec2 run-instances --image-id ${parameters.AMI} --count 1 --instance-type t2.micro --key-name ${parameters.KEY_NAME} --tag-specifications ${tags}".execute()
+            def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${params.INSTANCE_NAME}}]" // To name the instance on launch
+            def proc = "aws ec2 run-instances --image-id ${params.AMI} --count 1 --instance-type t2.micro --key-name ${params.KEY_NAME} --tag-specifications ${tags}".execute()
             proc.waitFor()
 
             def result = proc.text
             def jsonParser = new JsonSlurper()
             instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
-            if (parameters.DEBUG.toBoolean()) {
+            if (params.DEBUG.toBoolean()) {
                 println result
                 println "instanceID ${instanceID}"
             }
@@ -229,7 +229,7 @@ node {
             proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
             
-            if (parameters.DEBUG.toBoolean()) {
+            if (params.DEBUG.toBoolean()) {
                  println "out> $sout err> $serr"
             }        
         }
@@ -240,7 +240,7 @@ node {
             proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
             
-            if (parameters.DEBUG.toBoolean()) {
+            if (params.DEBUG.toBoolean()) {
                  println "out> $sout err> $serr"
             }            
         }
@@ -257,13 +257,13 @@ node {
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            if (parameters.DEBUG.toBoolean()) {
+            if (params.DEBUG.toBoolean()) {
                 println "publicDNS ${publicDNS}"
             }
         }
 
         stage ('Installing Java') {
-            def result = utils.runPowerShell("${env.WORKSPACE}\\src\\agilent\\sid\\cicd\\scripts\\ps\\Install_Java.ps1", "-Java_Version ${parameters.JAVA_VERSION}")
+            def result = utils.runPowerShell("${env.WORKSPACE}\\src\\agilent\\sid\\cicd\\scripts\\ps\\Install_Java.ps1", "-Java_Version ${params.JAVA_VERSION}")
         }
 
         stage('Attaching instance to Jenkins') { // In Progress
@@ -284,7 +284,7 @@ node {
         // Success or failure, always send notifications
         if (currentResult == 'FAILURE') {
             message = """<p>${currentResult}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
-            <p>Failed to create VM: ${parameters.INSTANCE_NAME}, check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
+            <p>Failed to create VM: ${params.INSTANCE_NAME}, check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
         } 
         if (currentResult == 'UNSTABLE') {
             echo 'Build is Unstable'
@@ -295,8 +295,8 @@ node {
         if (currentResult == 'SUCCESS') {
             echo 'Successfully created instance'
             message = """<p>***** VM created successfully *****</p>
-            <p>VM Name: ${parameters.INSTANCE_NAME}</p><p>Public DNS Address: ${publicDNS}</p>
-            <p>Remote Desktop Connection: <a href="mstsc.exe /v:${publicDNS}">Connect to ${parameters.INSTANCE_NAME}</a></p>
+            <p>VM Name: ${params.INSTANCE_NAME}</p><p>Public DNS Address: ${publicDNS}</p>
+            <p>Remote Desktop Connection: <a href="mstsc.exe /v:${publicDNS}">Connect to ${params.INSTANCE_NAME}</a></p>
             <p>NOTE: Outlook does not let any program run through links. So to launch remote desktop, right click on the link, copy and paste it on command prompt or windows run [Windows button + r] command, then hit 'Enter'</p>"""
         }
         // Send email notifications to the users who started the build.
