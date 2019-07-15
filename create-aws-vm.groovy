@@ -46,7 +46,7 @@ class PipelineUtilities extends AbstractPipeline {
     }
 
     // Checkout specified git branch from specified git repository 
-    void checkoutGitBranch(String branch, String repo='https://sparksource.collaboration.agilent.com/scm/siddev/kenakers-repo.git')
+    void checkoutGitBranch(String branch, String repo='ssh://git@sparksource.collaboration.agilent.com:7999/siddev/kenakers-repo.git')
     {
         script.println "Checking out source from Repository: $repo, Branch: $branch"
         script.git credentialsId: '022dccce-8996-43d7-a5c3-67473b642ccf', branch: "$branch", url: "$repo"
@@ -187,34 +187,36 @@ node {
     def adminPwd = 'GAjIzjTNcbpi&n!*c%6$UJv8yVS;Z8iZ' // Will need to get programmatically
     
     parameters {
-        string(name: 'KEY_PAIR_NAME', defaultValue: "", description: 'The name of the key pair created in AWS.')
-        string(name: 'INSTANCE_NAME', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
-        string(name: 'AMI', defaultValue: "", description: 'The Amazon Machine Image (AMI) ID used to specify the OS to run on the instance.')
-        booleanParam(name: 'DEBUG', defaultValue: true, description: 'Click to enable debugging in the console output.')
+        string(name: 'key_name', defaultValue: "", description: 'The name of the key pair created in AWS.')
+        string(name: 'instance_name', defaultValue: "", description: 'The name of the instance that will be created. This will be the host name of the instance, so no spaces...')
+        string(name: 'ami', defaultValue: "", description: 'The Amazon Machine Image (AMI) ID used to specify the OS to run on the instance.')
+        string(name: 'java_version', defaultValue: "1.8.0_212", description: 'The version of the Java 8 SDK to install on the instance - needed to connect back to Jenkins.')
+        booleanParam(name: 'debug', defaultValue: true, description: 'Click to enable debugging in the console output.')
     }
     try {
         echo """
-        Parameter KEY_PAIR_NAME is: ...................... ${KEY_PAIR_NAME}
-        Parameter INSTANCE_NAME is: ...................... ${INSTANCE_NAME}
-        Parameter AMI is: ................................ ${AMI}
-        Parameter DEBUG is: .............................. ${DEBUG}
+        Key pair name is: ...................... ${parameters.key_name}
+        Instance name is: ...................... ${parameters.instance_name}
+        AMI is: ................................ ${parameters.ami}
+        Java version is: ....................... ${parameters.java_version}
+        Debug is: .............................. ${parameters.debug}
         """
 
-        stage('Checkout Source...') {
-            echo "Branch name: ${utils.getBranchName()}"
-            utils.checkoutGitBranch(utils.getBranchName())
-        }
-        /*
+        //stage('Checkout Source...') {
+        //    echo "Branch name: ${utils.getBranchName()}"
+        //    utils.checkoutGitBranch(utils.getBranchName())
+        //}
+        
         stage('Launching instance') {
-            def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]" // To name the instance on launch
-            def proc = "aws ec2 run-instances --image-id ${AMI} --count 1 --instance-type t2.micro --key-name ${KEY_PAIR_NAME} --tag-specifications ${tags}".execute()
+            def tags = "ResourceType=instance,Tags=[{Key=Name,Value=${parameters.instance_name}}]" // To name the instance on launch
+            def proc = "aws ec2 run-instances --image-id ${parameters.ami} --count 1 --instance-type t2.micro --key-name ${parameters.key_name} --tag-specifications ${tags}".execute()
             proc.waitFor()
 
             def result = proc.text
             def jsonParser = new JsonSlurper()
             instanceID = jsonParser.parseText(result).Instances.InstanceId.get(0)
 
-            if (DEBUG.toBoolean()) {
+            if (parameters.debug.toBoolean()) {
                 println result
                 println "instanceID ${instanceID}"
             }
@@ -227,7 +229,7 @@ node {
             proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
             
-            if (DEBUG.toBoolean()) {
+            if (parameters.debug.toBoolean()) {
                  println "out> $sout err> $serr"
             }        
         }
@@ -238,7 +240,7 @@ node {
             proc.consumeProcessOutput(sout, serr)
             proc.waitFor()
             
-            if (DEBUG.toBoolean()) {
+            if (parameters.debug.toBoolean()) {
                  println "out> $sout err> $serr"
             }            
         }
@@ -255,13 +257,14 @@ node {
             
             publicDNS = jsonParser.parseText(proc.text).get(0)
             
-            if (DEBUG.toBoolean()) {
+            if (parameters.debug.toBoolean()) {
                 println "publicDNS ${publicDNS}"
             }
         }
-        // Install java using PowerShell job
-        */
 
+        stage ('Installing Java') {
+            def result = utils.runPowerShell("${env.WORKSPACE}\\src\\agilent\\sid\\cicd\\scripts\\ps\\Install_Java.ps1", "-Java_Version ${parameters.java_version}")
+        }
 
         stage('Attaching instance to Jenkins') { // In Progress
             utils.runPowerShell("${env.WORKSPACE}\\src\\agilent\\sid\\cicd\\scripts\\ps\\ConnectNewVirtualMachineToJenkins.ps1", "-VmName ${publicDNS} -userAdmin ${userAdmin} -adminPwd ${adminPwd}")
@@ -281,7 +284,7 @@ node {
         // Success or failure, always send notifications
         if (currentResult == 'FAILURE') {
             message = """<p>${currentResult}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
-            <p>Failed to create VM: ${INSTANCE_NAME}, check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
+            <p>Failed to create VM: ${parameters.instance_name}, check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
         } 
         if (currentResult == 'UNSTABLE') {
             echo 'Build is Unstable'
@@ -292,8 +295,8 @@ node {
         if (currentResult == 'SUCCESS') {
             echo 'Successfully created instance'
             message = """<p>***** VM created successfully *****</p>
-            <p>VM Name: ${INSTANCE_NAME}</p><p>Public DNS Address: ${publicDNS}</p>
-            <p>Remote Desktop Connection: <a href="mstsc.exe /v:${publicDNS}">Connect to ${INSTANCE_NAME}</a></p>
+            <p>VM Name: ${parameters.instance_name}</p><p>Public DNS Address: ${publicDNS}</p>
+            <p>Remote Desktop Connection: <a href="mstsc.exe /v:${publicDNS}">Connect to ${parameters.instance_name}</a></p>
             <p>NOTE: Outlook does not let any program run through links. So to launch remote desktop, right click on the link, copy and paste it on command prompt or windows run [Windows button + r] command, then hit 'Enter'</p>"""
         }
         // Send email notifications to the users who started the build.
