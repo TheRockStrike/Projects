@@ -201,8 +201,9 @@ node {
         """
 
         stage('Checkout Source...') {
-            echo "Branch name: ${utils.getBranchName(repo='https://sparksource.collaboration.agilent.com/scm/siddev/kenakers-repo.git')}"
-            utils.checkoutGitBranch(utils.getBranchName())
+            String branchName = util.getBranchName(repo='https://sparksource.collaboration.agilent.com/scm/siddev/kenakers-repo.git')
+            echo "Branch name: ${branchName}"
+            utils.checkoutGitBranch(branchName)
         }
         /*
         stage('Launching instance') {
